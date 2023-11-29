@@ -3,46 +3,49 @@ import srp
 
 def handle_client(client_socket):
     try:
+        for i in range(1, 6):  # Assuming 5 files to compare
+            filepath = '/Users/shreykoduru/Desktop/server files/test copy' + str(i) + '.py'
+            with open(filepath, "r") as f:
+                file_content = f.read()
         # Receive client's username and A value
-        username = client_socket.recv(1024)
-        A = client_socket.recv(1024)
+            username = client_socket.recv(1024)
+            A = client_socket.recv(1024)
 
-        # Generate salt and verifier for the given username
-        # This should be stored from the time of user registration
-        with open('/Users/shreykoduru/Desktop/server files/test copy1.py',"r") as f:
-            string = f.read()
-        print(string)
-        salt, vkey = srp.create_salted_verification_key(username, str(string))
+            # Generate salt and verifier for the given username
+            # This should be stored from the time of user registration
+            salt, vkey = srp.create_salted_verification_key(username, str(file_content))
 
-        svr = srp.Verifier(username, salt, vkey, A)
-        s, B = svr.get_challenge()
+            svr = srp.Verifier(username, salt, vkey, A)
+            s, B = svr.get_challenge()
 
-        # Send salt and B to client
-        client_socket.send(salt)
-        client_socket.send(B)
+            # Send salt and B to client
+            client_socket.send(salt)
+            client_socket.send(B)
 
-        # Receive M from client and verify session
-        M = client_socket.recv(1024)
-        HAMK = svr.verify_session(M)
+            # Receive M from client and verify session
+            M = client_socket.recv(1024)
+            HAMK = svr.verify_session(M)
+            
+            #HAMK = b'r2\xa7\xd8\xfaXy\xbd\xfc\x0cN\xa4\x9b\xfaf\xb62\xef\x02\xcc'
+            
+            if HAMK is None:
+                print("Files Not the Same ")
+                HAMK = b'00000000000000000000000'
+                client_socket.send(HAMK)
+                continue
 
-        if HAMK is None:
-            print("authentification Failed")
-            client_socket.close()
-            exit(0)
+                
+            
 
-        # Send HAMK to client
-        client_socket.send(HAMK)
+            # Send HAMK to client
+            client_socket.send(HAMK)
 
-        if svr.authenticated():
-            print("Files are the Same")
-            client_socket.close()
-            exit(0)
-
-        else:
-            print("Files Not the Same")
-            client_socket.close()
-            exit(0)
-
+            if svr.authenticated():
+                print("Files are the Same")
+                
+            else:
+                print("Files Not the Same")
+            
     finally:
         client_socket.close()
 
@@ -55,8 +58,7 @@ def run_server():
 
     try:
         while True:
-            client_socket,  = server.accept()
-            print("accept")
+            client_socket, _ = server.accept()
             handle_client(client_socket)
     finally:
         server.close()
