@@ -8,7 +8,7 @@ def run_client():
     
     for j in range(1,6):
         for i in range(5):
-            with open('C:/Users/keita/Desktop/client files/test' + str(j) + '.py',"r") as f:
+            with open('mockclientfiles/test' + str(j) + '.py',"r") as f:
                 string = f.read()
             
             username = 'user'
