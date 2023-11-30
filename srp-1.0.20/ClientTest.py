@@ -27,7 +27,7 @@ def run_client():
             client.send(M)
 
             HAMK = client.recv(1024)
-            if HAMK is '00000000000000000000000':
+            if HAMK == '00000000000000000000000':
                 print("FILES ARE NOT THE SAME")
                 continue
             

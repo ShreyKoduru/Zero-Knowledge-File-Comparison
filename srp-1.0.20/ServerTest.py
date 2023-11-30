@@ -51,7 +51,7 @@ def run_server():
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(('192.168.137.129', 5005))
     server.listen(5)
-    print("Server listening on port 12345")
+    print("Server listening on port 5005")
 
     try:
         while True:
