@@ -1,4 +1,4 @@
-# Hash Hounds CS 355 Implementation Project
+# CS 355 Implementation Project
 Version 1.0
 
 ### Introduction
