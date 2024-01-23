@@ -1,4 +1,4 @@
-# CS 355 Implementation Project
+# Zero-Knowledge File Comparison Project
 Version 1.0
 
 ### Introduction
